@@ -1,6 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_auth_firebase/screens/register.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+Future<UserCredential> signInWithGoogle() async {
+  // Trigger the authentication flow
+  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+  // Obtain the auth details from the request
+  final GoogleSignInAuthentication? googleAuth =
+      await googleUser?.authentication;
+
+  // Create a new credential
+  final credential = GoogleAuthProvider.credential(
+    accessToken: googleAuth?.accessToken,
+    idToken: googleAuth?.idToken,
+  );
+
+  // Once signed in, return the UserCredential
+  return await FirebaseAuth.instance.signInWithCredential(credential);
+}
+
+Future<UserCredential> signInWithFacebook() async {
+  // Trigger the sign-in flow
+  final LoginResult loginResult = await FacebookAuth.instance.login();
+
+  // Create a credential from the access token
+  final OAuthCredential facebookAuthCredential =
+      FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+  // Once signed in, return the UserCredential
+  return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -14,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _auth = FirebaseAuth.instance;
+  FirebaseFirestore get firestore => FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -93,7 +126,51 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
               ),
-              const SizedBox(height: 50),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        var googleUser = signInWithGoogle();
+                        googleUser.then((user) {
+                          var data = {
+                            'email': user.user!.email,
+                            'name': user.user!.displayName,
+                          };
+                          firestore
+                              .collection('users')
+                              .doc(user.user!.uid)
+                              .set(data);
+                          Navigator.pushNamed(context, 'home');
+                        });
+                      },
+                      child: const Text('Google')),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        var fbUser = signInWithFacebook();
+                        fbUser.then((user) {
+                          var data = {
+                            'email': user.user!.email,
+                            'name': user.user!.displayName,
+                          };
+                          firestore
+                              .collection('users')
+                              .doc(user.user!.uid)
+                              .set(data);
+                          Navigator.pushNamed(context, 'home');
+                        });
+                      },
+                      child: const Text('Facebook')),
+                ],
+              ),
+              const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -111,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                      'Preencha o campo email e clique no botão acima para receber o email de reset de senha'),
+                      'Preencha o campo email e clique no botão acima\n para receber o email de reset de senha'),
                 ],
               ),
               const SizedBox(height: 50),
