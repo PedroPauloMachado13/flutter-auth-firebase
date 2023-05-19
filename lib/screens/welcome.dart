@@ -26,11 +26,8 @@ class WelcomePage extends StatelessWidget {
                       child: Container(
                         height: fullHeight * 1.2,
                         width: fullWidth,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/welcome.png'),
-                            fit: BoxFit.cover,
-                          ),
+                        decoration: BoxDecoration(
+                          color: Colors.red[200],
                         ),
                       ),
                     ),
@@ -56,7 +53,7 @@ class WelcomePage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: ElevatedButton(
                       child: const Text("cadastre-se"),
-                      onPressed: () => (context) => const RegisterPage(),
+                      onPressed: () => Navigator.pushNamed(context, 'register'),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -64,7 +61,7 @@ class WelcomePage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: ElevatedButton(
                       child: const Text("login"),
-                      onPressed: () => (context) => const LoginPage(),
+                      onPressed: () => Navigator.pushNamed(context, 'login'),
                     ),
                   ),
                 ]),
@@ -86,7 +83,7 @@ class WelcomePage extends StatelessWidget {
         ),
         children: [
           TextSpan(
-            text: "\nmappii.",
+            text: "\napp_name.",
             style: TextStyle(
               fontSize: 51,
               color: Colors.red,

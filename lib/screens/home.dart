@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-late User loggedinUser;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,6 +9,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _auth = FirebaseAuth.instance;
+  FirebaseFirestore get firestore => FirebaseFirestore.instance;
+  User? loggedinUser;
+  String? userName;
 
   void initState() {
     super.initState();
@@ -19,8 +21,16 @@ class _HomePageState extends State<HomePage> {
   //using this function you can use the credentials of the user
   void getCurrentUser() async {
     try {
-      final user = await _auth.currentUser;
+      final user = _auth.currentUser;
       if (user != null) {
+        firestore.collection('users').doc(user.uid).get().then(
+          (DocumentSnapshot doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            setState(() {
+              userName = data['name'];
+            });
+          },
+        );
         loggedinUser = user;
       }
     } catch (e) {
@@ -48,7 +58,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Center(
         child: Text(
-          "Welcome ${loggedinUser.displayName}",
+          userName == null ? "Welcome ..." : "Welcome ${userName}",
           style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
         ),
       ),

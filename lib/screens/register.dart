@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_auth_firebase/screens/login.dart';
+import 'package:crypto/crypto.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -46,7 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               const SizedBox(height: 48),
               TextField(
-                controller: nameController,
+                controller: emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   hintText: 'Email',
@@ -54,7 +57,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               const SizedBox(height: 24),
               TextField(
-                controller: emailController,
+                controller: nameController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   hintText: 'Nome completo',
@@ -75,14 +78,21 @@ class _RegisterPageState extends State<RegisterPage> {
                     final newUser = _auth.createUserWithEmailAndPassword(
                         email: emailController.text,
                         password: passwordController.text);
-                    /* [TODO: UPDATE USER DATA WITH USER NAME]
+                    var passwordBytes = utf8.encode(passwordController.text);
+                    var encryptedPassword = sha256.convert(passwordBytes);
                     var data = {
+                      'email': emailController.text,
                       'name': nameController.text,
+                      'password': encryptedPassword.toString(),
                     };
-                    var update =
-                        firestore.collection('users').doc(newUser).set(data);
-                        */
-                    Navigator.pushNamed(context, 'home_screen');
+
+                    newUser.then((user) {
+                      firestore
+                          .collection('users')
+                          .doc(user.user!.uid)
+                          .set(data);
+                    });
+                    Navigator.pushNamed(context, 'home');
                   }),
               const SizedBox(height: 50),
               GestureDetector(
@@ -106,7 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ],
                 ),
-                onTap: () => (context) => const LoginPage(),
+                onTap: () => Navigator.pushNamed(context, 'login'),
               ),
               const SizedBox(height: 50),
             ],

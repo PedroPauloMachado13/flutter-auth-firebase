@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   children: [
                     TextSpan(
-                      text: 'Mappii.',
+                      text: 'app_name.',
                       style: TextStyle(
                         color: Colors.red[200],
                         fontSize: 28,
@@ -86,19 +86,40 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
                   FocusManager.instance.primaryFocus?.unfocus();
                   if (_formKey.currentState?.validate() ?? false) {
-                    final user = _auth.signInWithEmailAndPassword(
+                    _auth.signInWithEmailAndPassword(
                         email: emailController.text,
                         password: passwordController.text);
-                    Navigator.pushNamed(context, 'home_screen');
+                    Navigator.pushNamed(context, 'home');
                   }
                 },
               ),
               const SizedBox(height: 50),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        _auth.sendPasswordResetEmail(
+                            email: emailController.text);
+                      },
+                      child: const Text('Esqueci minha senha')),
+                ],
+              ),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                      'Preencha o campo email e clique no botão acima para receber o email de reset de senha'),
+                ],
+              ),
+              const SizedBox(height: 50),
               GestureDetector(
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
                         "Não tem uma conta? ",
                         style: TextStyle(
@@ -115,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ],
                   ),
-                  onTap: () => (context) => const RegisterPage()),
+                  onTap: () => Navigator.pushNamed(context, 'register')),
               const SizedBox(height: 50),
             ],
           ),
