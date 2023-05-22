@@ -1,16 +1,20 @@
-# flutter_auth_firebase
+# Flutter Firebase Authentication
 
-A new Flutter project.
+Projeto em Flutter visando fazer um aplicativo simples que implementa autenticação do serviço do Google Firebase.
 
-## Getting Started
+## Pontos do projeto
 
-This project is a starting point for a Flutter application.
+Este projeto implementa autenticação com email e senha, login com Google e login com Facebook.
 
-A few resources to get you started if this is your first Flutter project:
+Como adicional, ainda guardamos as informações do usuário para uso futuro dentro da aplicação.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Links uteis utilizados no desenvolvimento do projeto:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [Tutorial seguido para cadastro/login com email e senha](https://medium.com/code-for-cause/flutter-registration-login-using-firebase-5ada3f14c066)
+- [Quickstart com Cloud Firestore](https://firebase.google.com/docs/firestore/quickstart)
+- [Buscando/enviando dados da Cloud Firestore](https://firebase.google.com/docs/firestore/query-data/get-data#dart_2)
+- [Plugin oficial de integração com Google](https://pub.dev/packages/google_sign_in/install)
+- [Plugin oficial de integração com Facebook](https://pub.dev/packages/flutter_facebook_auth/install)
+- [Documentação do Firebase para login social](https://firebase.flutter.dev/docs/auth/social/)
+
+
